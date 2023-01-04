@@ -2,6 +2,7 @@ package com.melck.mckecomerce.controller;
 
 import java.net.URI;
 
+import com.melck.mckecomerce.dto.ProductRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,8 +24,8 @@ public class ProductController {
     private final ProductService service;
 
     @PostMapping
-    public ResponseEntity<Product> insert(@RequestBody Product product) {
-        Product newProduct = service.insert(product);
+    public ResponseEntity<Product> insert(@RequestBody ProductRequest request) {
+        Product newProduct = service.insert(request);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newProduct.getId()).toUri();
         return ResponseEntity.created(uri).body(newProduct);
     }
