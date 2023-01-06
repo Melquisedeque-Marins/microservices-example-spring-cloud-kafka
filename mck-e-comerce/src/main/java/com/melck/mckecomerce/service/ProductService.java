@@ -54,7 +54,7 @@ public class ProductService {
         return ProductResponse.builder()
                 .id(product.getId())
                 .name(product.getName())
-                .qty(product.getQty())
+                .quantity(product.getQuantity())
                 .price(product.getPrice())
                 .description(product.getDescription())
                 .imgUrl(product.getImgUrl())
