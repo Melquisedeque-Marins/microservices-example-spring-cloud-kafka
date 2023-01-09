@@ -1,5 +1,6 @@
 package com.melck.inventoryservice.controller;
 
+import com.melck.inventoryservice.dto.InventoryResponse;
 import com.melck.inventoryservice.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ public class InventoryController {
     private final InventoryService inventoryService;
 
     @GetMapping("/{sku-code}")
-    public boolean isInStock(@RequestParam List<String> skuCode) {
-        return inventoryService.findBySkuCode().;
+    public List<InventoryResponse> isInStock(@RequestParam List<String> skuCode) {
+        return inventoryService.isInStock(skuCode);
     }
 }
