@@ -1,5 +1,6 @@
 package com.melck.orderservice.service;
 
+import com.melck.orderservice.dto.InventoryResponse;
 import com.melck.orderservice.dto.OrderLineItemsDto;
 import com.melck.orderservice.dto.OrderRequest;
 import com.melck.orderservice.model.Order;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,12 +33,23 @@ public class OrderService {
                 .toList();
 
         order.setOrderLineItemsList(orderLineItems);
-        Boolean result = webClient.get()
-                    .uri("http://localhost:8082/api/inventory")
+
+        List<String> skuCodes = order.getOrderLineItemsList().stream()
+                .map(OrderLineItems::getSkuCode)
+                .toList();
+
+        InventoryResponse[] inventoryResponsesArray = webClient.get()
+                    .uri("http://localhost:8082/api/inventory",
+                            uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
                     .retrieve()
-                    .bodyToMono(Boolean.class)
+                    .bodyToMono(InventoryResponse[].class)
                     .block();
-        if(result) {
+
+        Boolean allProductsInStock =  Arrays.stream(inventoryResponsesArray)
+                .allMatch(inventoryResponse -> inventoryResponse.getIsInStock());
+
+
+        if(allProductsInStock) {
             orderRepository.save(order);
         }
         else {
