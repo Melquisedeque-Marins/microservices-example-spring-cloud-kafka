@@ -1,0 +1,32 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8791/eureka
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes[0]:
+        - id: product-service
+          uri: lb://product-service
+          predicates[0]:
+            - Path/api/product
+      routes[1]:
+        - id: product-service
+          uri: lb://order-service
+          predicates:
+            - Path/api/order
+
+logging:
+  level:
+    root: INFO
+    org:
+      springframework:
+        cloud:
+          gateway: 
+            route:
+              RouteDefinitionLocator: INFO
+          gateway: TRACE
+    
