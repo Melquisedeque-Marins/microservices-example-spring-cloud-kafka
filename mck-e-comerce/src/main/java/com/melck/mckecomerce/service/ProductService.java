@@ -12,11 +12,8 @@ import com.melck.mckecomerce.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
 
-import java.beans.BeanProperty;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -59,6 +56,11 @@ public class ProductService {
                 .description(product.getDescription())
                 .imgUrl(product.getImgUrl())
                 .build();
+    }
+
+    public void deleteProduct(Long id) {
+        getProductById(id);
+        repository.deleteById(id);
     }
 
     
