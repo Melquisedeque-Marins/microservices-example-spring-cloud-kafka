@@ -13,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.melck.mckecomerce.model.Product;
 import com.melck.mckecomerce.service.ProductService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class ProductController {
     private final ProductService service;
 
     @PostMapping
-    public ResponseEntity<Product> insert(@RequestBody ProductRequest request) {
+    public ResponseEntity<Product> insert(@RequestBody @Valid ProductRequest request) {
         Product newProduct = service.insert(request);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newProduct.getId()).toUri();
         return ResponseEntity.created(uri).body(newProduct);
