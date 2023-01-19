@@ -75,4 +75,9 @@ public class OrderService {
         Optional<Order> order = orderRepository.findById(id);
         return order.orElseThrow();
     }
+
+    public void deleteOrderById(Long id) {
+        getOrderById(id);
+        orderRepository.deleteById(id);
+    }
 }
