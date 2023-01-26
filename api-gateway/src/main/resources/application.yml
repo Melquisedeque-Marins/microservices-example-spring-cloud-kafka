@@ -1,7 +1,7 @@
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8791/eureka
+      defaultZone: http://localhost:8761/eureka
 
 spring:
   application:
@@ -34,7 +34,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8181/realms/spring-boot-microservices-realm
+          issuer-uri: http://localhost:8181/realms/spring-boot-microservices-realm 
 logging:
   level:
     root: INFO
