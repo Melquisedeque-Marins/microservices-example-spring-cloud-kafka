@@ -3,6 +3,7 @@ package com.melck.orderservice.controller;
 import com.melck.orderservice.dto.OrderRequest;
 import com.melck.orderservice.model.Order;
 import com.melck.orderservice.service.OrderService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -20,9 +21,14 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @CircuitBreaker(name = "inventory", fallbackMethod = "fallbackMethod")
     public String placeOrder(@RequestBody OrderRequest request) {
         orderService.placeOrder(request);
         return "order placed with successfully";
+    }
+
+    public String fallbackMethod(OrderRequest orderRequest, RuntimeException runtimeException) {
+        return "Oops! Something went wrong, please order after sometime";
     }
 
     @GetMapping
