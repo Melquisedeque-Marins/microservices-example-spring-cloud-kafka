@@ -4,9 +4,11 @@ import com.melck.orderservice.dto.OrderRequest;
 import com.melck.orderservice.model.Order;
 import com.melck.orderservice.service.OrderService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +24,13 @@ public class OrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @CircuitBreaker(name = "inventory", fallbackMethod = "fallbackMethod")
-    public String placeOrder(@RequestBody OrderRequest request) {
-        orderService.placeOrder(request);
-        return "order placed with successfully";
+    @TimeLimiter(name = "inventory")
+    public CompletableFuture<String> placeOrder(@RequestBody OrderRequest orderRequest) {
+        return CompletableFuture.supplyAsync(() -> orderService.placeOrder(orderRequest));
     }
 
-    public String fallbackMethod(OrderRequest orderRequest, RuntimeException runtimeException) {
-        return "Oops! Something went wrong, please order after sometime";
+    public CompletableFuture<String> fallbackMethod(OrderRequest orderRequest, RuntimeException runtimeException) {
+        return CompletableFuture.supplyAsync(() -> "Oops! Something went wrong, please order after sometime");
     }
 
     @GetMapping
